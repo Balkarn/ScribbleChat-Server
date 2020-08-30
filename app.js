@@ -14,23 +14,41 @@ const server = http.createServer(app);
 
 const io = socketIo(server);
 
-const getApiAndEmit = socket => {
-    const response = new Date();
-    // Sends the date and time to the client
-    socket.emit("FromAPI", response);
-};
-
-let interval; //locally define an interval
+var names = [] //List of all names online
 
 io.on("connection", (socket) => { //on connection
+
+    socket.name = null;
+
     console.log("New client connected");
-    if (interval) { //if an interval already exists, clear it (for multiple connections)
-        clearInterval(interval);
-    }
-    interval = setInterval(() => getApiAndEmit(socket), 1000);  //call the getApiAndEmit function every second
+
+    socket.on('tryName', (nameAttempt) => {
+        if (names.indexOf(nameAttempt) > -1) { //If name already exists
+            socket.emit('nameAgain',"");
+        } else {
+            io.emit
+            names.push(nameAttempt);
+            socket.name = nameAttempt;
+            socket.emit('nameValid',"");
+            console.log(names);
+            socket.broadcast.emit('userJoined',nameAttempt);
+        }
+    });
+
+    socket.on('sendMessage', (msg) => {
+        io.emit('recieveMessage', msg); //emit the chat message event to everyone
+    });
+
     socket.on("disconnect", () => {
+        socket.broadcast.emit('userLeft', socket.name);
         console.log("Client disconnected");
-        clearInterval(interval);
+        if (socket.name!=null) {
+            var index = names.indexOf(socket.name);
+            if (index > -1) {
+                names.splice(index, 1);
+            }   
+            console.log(names);
+        }
     });
 });
 
