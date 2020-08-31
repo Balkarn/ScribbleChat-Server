@@ -24,7 +24,7 @@ io.on("connection", (socket) => { //on connection
 
     socket.on('tryName', (nameAttempt) => {
         if (names.indexOf(nameAttempt) > -1) { //If name already exists
-            socket.emit('nameAgain',"");
+            socket.emit('nameAgain',nameAttempt);
         } else {
             io.emit
             names.push(nameAttempt);
