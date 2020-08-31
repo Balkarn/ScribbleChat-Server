@@ -35,6 +35,16 @@ io.on("connection", (socket) => { //on connection
         }
     });
 
+    socket.on('requestCurrentlyOnline', (data) => {
+        toReturn = "Currently online: ";
+        for (i = 0; i < names.length; i++) {
+            if (names[i] != data) {
+                toReturn = toReturn + names[i] + ", ";
+            }
+        }
+        socket.emit('currentlyOnline', toReturn);
+    });
+
     socket.on('sendMessage', (msg) => {
         io.emit('recieveMessage', msg); //emit the chat message event to everyone
     });
