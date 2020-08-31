@@ -36,10 +36,12 @@ io.on("connection", (socket) => { //on connection
     });
 
     socket.on('requestCurrentlyOnline', (data) => {
-        toReturn = "Currently online: ";
+        toReturn = "Currently online:";
         for (i = 0; i < names.length; i++) {
             if (names[i] != data) {
-                toReturn = toReturn + names[i] + ", ";
+                toReturn = toReturn + " " + names[i] + ",";
+            } else {
+                toReturn = toReturn + " " + names[i] + "(you)"
             }
         }
         socket.emit('currentlyOnline', toReturn);
