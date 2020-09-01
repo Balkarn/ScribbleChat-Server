@@ -42,13 +42,11 @@ io.on("connection", (socket) => {
     socket.on('requestCurrentlyOnline', (data) => {
 
         toReturn = "Currently online:";
-        for (i = 0; i < names.length; i++) { //Build a string of everyone online
-            if (names[i] != data) {
-                toReturn = toReturn + " " + names[i] + ",";
-            } else {
-                toReturn = toReturn + " and you!";
-            }
+        for (i = 0; i < names.length-1; i++) { //Build a string of everyone online
+            toReturn = toReturn + " " + names[i] + ",";
         }
+        toReturn = toReturn + " " + names[names.length-1] + ".";
+
         socket.emit('currentlyOnline', toReturn); //Send a message back of the built string
 
     });
